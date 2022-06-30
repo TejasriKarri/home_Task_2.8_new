@@ -23,7 +23,11 @@
  *    console.log(r.getArea());   // => 200
  */
 function Rectangle(width, height) {
-    throw new Error('Not implemented');
+    this.width = width;
+    this.height = height;
+
+    this.__proto__.getArea = () => width * height;
+    //throw new Error('Not implemented');
 }
 
 
@@ -38,7 +42,8 @@ function Rectangle(width, height) {
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
 function getJSON(obj) {
-    throw new Error('Not implemented');
+    return JSON.stringify(obj)
+    // throw new Error('Not implemented');
 }
 
 
@@ -54,7 +59,10 @@ function getJSON(obj) {
  *
  */
 function fromJSON(proto, json) {
-    throw new Error('Not implemented');
+    let finalResult = JSON.parse(json);
+    finalResult.__proto__ = proto;
+    return finalResult;
+    //throw new Error('Not implemented');
 }
 
 
@@ -107,34 +115,100 @@ function fromJSON(proto, json) {
  */
 
 const cssSelectorBuilder = {
-
-    element: function(value) {
-        throw new Error('Not implemented');
+    error1: 'Element, id and pseudo-element should not occur more then one time inside the selector',
+    error2: 'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
+    number: 0,
+    result: '',
+    element: function (value) {
+        var numFirst = 1;
+        if (this.hasOwnProperty('isElem')) {
+            throw this.error1;
+        };
+        if (this.number > numFirst) {
+            throw this.error2;
+        }
+        var s = { result: value, isElem: value, number: numFirst };
+        s.__proto__ = this;
+        return s;
+        //throw new Error('Not implemented');
     },
 
-    id: function(value) {
-        throw new Error('Not implemented');
+    id: function (value) {
+        var numFirst = 2;
+        if (this.hasOwnProperty('isId')) {
+            throw this.error1;
+        };
+        if (this.number > numFirst) {
+            throw this.error2;
+        }
+        var r = this.result + `#${value}`;
+        var s = { result: r, isId: value, number: numFirst };
+        s.__proto__ = this;
+        return s;
+        //  throw new Error('Not implemented');
     },
 
-    class: function(value) {
-        throw new Error('Not implemented');
+    class: function (value) {
+        var numFirst = 3;
+        if (this.number > numFirst) {
+            throw this.error2;
+        }
+        var r = this.result + `.${value}`;
+        var s = { result: r, number: numFirst };
+        s.__proto__ = this;
+        return s;
+        //throw new Error('Not implemented');
     },
 
-    attr: function(value) {
-        throw new Error('Not implemented');
+    attr: function (value) {
+        var numFirst = 4;
+        if (this.number > numFirst) {
+            throw this.error2;
+        }
+        var r = this.result + `[${value}]`;
+        var s = { result: r, number: numFirst };
+        s.__proto__ = this;
+        return s;
+        //throw new Error('Not implemented');
     },
 
-    pseudoClass: function(value) {
-        throw new Error('Not implemented');
+    pseudoClass: function (value) {
+        var numFirst = 5;
+        if (this.number > numFirst) {
+            throw this.error2;
+        }
+        var r = this.result + `:${value}`;
+        var s = { result: r, number: numFirst };
+        s.__proto__ = this;
+        return s;
+        //throw new Error('Not implemented');
     },
 
-    pseudoElement: function(value) {
-        throw new Error('Not implemented');
+    pseudoElement: function (value) {
+        if (this.hasOwnProperty('isPsEl')) {
+            throw this.error1;
+        };
+        var numFirst = 6;
+        if (this.number > numFirst) {
+            throw this.error2;
+        }
+        var r = this.result + `::${value}`;
+        var s = { result: r, isPsEl: value, number: numFirst };
+        s.__proto__ = this;
+        return s;
+        // throw new Error('Not implemented');
     },
 
-    combine: function(selector1, combinator, selector2) {
-        throw new Error('Not implemented');
+    combine: function (selector1, combinator, selector2) {
+        var s = { result: `${selector1.result} ${combinator} ${selector2.result}` };
+        s.__proto__ = this;
+        return s;
     },
+
+    stringify: function () {
+        return this.result;
+    }
+    //throw new Error('Not implemented');
 };
 
 
